@@ -1,9 +1,11 @@
 package br.com.fiap.VistoriaPS.controller;
 
+import java.io.IOException;
 import java.util.ArrayList; 
 
 import br.com.fiap.VistoriaPS.model.entity.Cadastro;
 import br.com.fiap.VistoriaPS.model.repository.CadastroRepository;
+import jakarta.validation.OverridesAttribute;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
@@ -13,12 +15,17 @@ import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.container.ContainerRequestContext;
+import jakarta.ws.rs.container.ContainerResponseContext;
+import jakarta.ws.rs.container.ContainerResponseFilter;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.ResponseBuilder;
+import jakarta.ws.rs.ext.Provider;
 
+@Provider
 @Path("/VistoriaPS/cadastro")
-public class CadastroResource {
+public class CadastroResource implements ContainerResponseFilter {
 
 	@GET
 	@Path("/cliente/{id}")
@@ -44,7 +51,6 @@ public class CadastroResource {
 	}
 	
 	@POST
-	@Path("/salvar")
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response save(@Valid Cadastro cadastro) {
 		Cadastro resposta = CadastroRepository.save(cadastro);
@@ -71,7 +77,6 @@ public class CadastroResource {
 	}
 	
 	@PUT
-	@Path("/alterar")
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response update(@Valid Cadastro cadastro) {
 		Cadastro resposta = CadastroRepository.update(cadastro);
@@ -83,6 +88,17 @@ public class CadastroResource {
 		}
 		response.entity(resposta);
 		return response.build();
+	}
+	
+	@Override
+	public void filter(ContainerRequestContext requestContext, ContainerResponseContext
+			ResponseContext) 
+					throws IOException{
+		ResponseContext.getHeaders().add("Access-Control-Allow-Origin", "*");
+		ResponseContext.getHeaders().add("Access-Control-Allow-Credentials", "true");
+		ResponseContext.getHeaders().add("Access-Control-Allow-Headers", "origin, content-type, accept, authorization");
+		ResponseContext.getHeaders().add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS, HEAD");
+		
 	}
 	
 }

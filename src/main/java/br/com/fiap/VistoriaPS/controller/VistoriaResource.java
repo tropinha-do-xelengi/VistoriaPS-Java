@@ -1,5 +1,6 @@
 package br.com.fiap.VistoriaPS.controller;
 
+import java.io.IOException;
 import java.util.ArrayList; 
 
 import br.com.fiap.VistoriaPS.model.entity.Vistoria;
@@ -13,12 +14,17 @@ import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.container.ContainerRequestContext;
+import jakarta.ws.rs.container.ContainerResponseContext;
+import jakarta.ws.rs.container.ContainerResponseFilter;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.ResponseBuilder;
+import jakarta.ws.rs.ext.Provider;
 
+@Provider
 @Path("/VistoriaPS/vistoria")
-public class VistoriaResource {
+public class VistoriaResource implements ContainerResponseFilter{
 
 	@GET
 	@Path("/encontrar/{id}")
@@ -44,7 +50,6 @@ public class VistoriaResource {
 	}
 	
 	@POST
-	@Path("/salvar")
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response save(@Valid Vistoria vistoria) {
 		Vistoria resposta = VistoriaRepository.save(vistoria);
@@ -71,7 +76,6 @@ public class VistoriaResource {
 	}
 	
 	@PUT
-	@Path("/alterar")
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response update(@Valid Vistoria vistoria) {
 		Vistoria resposta = VistoriaRepository.update(vistoria);
@@ -83,6 +87,17 @@ public class VistoriaResource {
 		}
 		response.entity(resposta);
 		return response.build();
+	}
+	
+	@Override
+	public void filter(ContainerRequestContext requestContext, ContainerResponseContext
+			ResponseContext) 
+					throws IOException{
+		ResponseContext.getHeaders().add("Access-Control-Allow-Origin", "*");
+		ResponseContext.getHeaders().add("Access-Control-Allow-Credentials", "true");
+		ResponseContext.getHeaders().add("Access-Control-Allow-Headers", "origin, content-type, accept, authorization");
+		ResponseContext.getHeaders().add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS, HEAD");
+		
 	}
 	
 }

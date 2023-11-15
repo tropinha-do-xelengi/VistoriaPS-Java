@@ -105,7 +105,7 @@ public class VistoriaRepository extends Repository{
 	}
 	
 	public static Vistoria findById(Long id) {
-		String sql = "select * from tb_cadastro where id=?";
+		String sql = "select * from tb_vistoria where id=?";
 		Vistoria vistoria = new Vistoria();
 		try {
 			PreparedStatement ps = getConnection().prepareStatement(sql);
